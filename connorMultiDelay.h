@@ -53,6 +53,12 @@ struct connorMultiDelayParameters
 		enableFlange = params.enableFlange;
 		enableChorus = params.enableChorus;
 		enableDouble = params.enableDouble;
+
+		chorusDepth_Pct = params.chorusDepth_Pct;
+		doublerDepth_Pct = params.doublerDepth_Pct;
+
+		chorusRateScale = params.chorusRateScale;
+		doublerRateScale = params.doublerRateScale;
 		// --- MUST be last
 		return *this;
 	}
@@ -76,6 +82,8 @@ struct connorMultiDelayParameters
 	double lfoRate_Hz = 2.0;
 	double lfoDepth_Pct = 0.0;
 	double feedback_Pct = 0.0;
+	double chorusDepth_Pct = 0.0;
+	double doublerDepth_Pct = 0.0;
 
 	bool enableFlange = false;
 	bool enableChorus = false;
@@ -83,6 +91,8 @@ struct connorMultiDelayParameters
 
 
 	// --- Discrete Plugin Variables 
+	int chorusRateScale = 1;
+	int doublerRateScale = 1;
 	int delayAlgorithm = 0;
 	enum class delayAlgorithmEnum { normal, pingpong };		///< init
 };
@@ -258,16 +268,16 @@ public:
 
 		ConnorModulatedDelayParameters chorusParameters;
 		chorusParameters.algorithm = modDelaylgorithm::kChorus;
-		chorusParameters.lfoRate_Hz = parameters.lfoRate_Hz;
-		chorusParameters.lfoDepth_Pct = parameters.lfoDepth_Pct;
-		chorusParameters.feedback_Pct = parameters.feedback_Pct;
+		chorusParameters.lfoRate_Hz = parameters.lfoRate_Hz * parameters.chorusRateScale;
+		chorusParameters.lfoDepth_Pct = parameters.chorusDepth_Pct;
+		chorusParameters.feedback_Pct = 0;
 		chorus.setParameters(chorusParameters);
 
 		ConnorModulatedDelayParameters doubleParameters;
 		doubleParameters.algorithm = modDelaylgorithm::kVibrato;
-		doubleParameters.lfoRate_Hz = parameters.lfoRate_Hz;
-		doubleParameters.lfoDepth_Pct = parameters.lfoDepth_Pct;
-		doubleParameters.feedback_Pct = parameters.feedback_Pct;
+		doubleParameters.lfoRate_Hz = parameters.lfoRate_Hz * parameters.doublerRateScale;
+		doubleParameters.lfoDepth_Pct = parameters.doublerDepth_Pct;
+		doubleParameters.feedback_Pct = 0;
 		doubler.setParameters(doubleParameters);
 		
 		// --- cook parameters here
